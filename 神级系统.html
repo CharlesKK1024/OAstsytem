@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>神级分析系统</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+  <link rel="stylesheet" href="css/style.css?v=5">
+</head>
+<body>
+
+<div class="toolbar">
+  <input type="text" id="nameInput" placeholder="请输入员工姓名" />
+  <div class="date-item">
+    <label>开始月份：</label>
+    <input type="text" id="startMonth" placeholder="20180101" value="20180101">
+  </div>
+  <div class="date-item">
+    <label>结束月份：</label>
+    <input type="text" id="endMonth" placeholder="20300101" value="20300101">
+  </div>
+  <button id="queryBtn">查询全部数据</button>
+  <button id="themeBtn" style="margin-left:auto; padding: 6px 12px; border-radius: 4px; cursor: pointer;">🌙 深色模式</button>
+</div>
+
+<div id="tip" class="tip">请输入员工姓名并查询</div>
+
+<!-- 历史记录面板 (折叠面板结构) -->
+<div class="collapsible-panel history-panel-wrapper" id="historyPanel" style="display: none;">
+  <div class="panel-header" onclick="togglePanel('historyPanelBody')">
+    <div class="panel-title"><i>🕒</i> 历史查询</div>
+    <button class="collapse-btn" id="historyPanelBtn">−</button>
+  </div>
+  <div class="panel-body" id="historyPanelBody">
+    <div class="history-tags" id="historyTags">
+      <!-- 标签示例 -->
+      <!-- <div class="history-tag">...</div> -->
+    </div>
+  </div>
+</div>
+<!-- 综合面板 -->
+<div class="collapsible-panel">
+  <div class="panel-header" onclick="togglePanel('comprehensivePanelBody')">
+    <div class="panel-title"><i>📊</i> 综合面板</div>
+    <button class="collapse-btn" id="comprehensivePanelBtn">−</button>
+  </div>
+  <div class="panel-body" id="comprehensivePanelBody">
+    <div class="analysis-panel">
+      <!-- 查询区域 -->
+      <div class="analysis-card primary" style="grid-column: 1 / -1;">
+        <h3><i>🔍</i> 综合数据查询</h3>
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 12px;">
+          <input type="text" id="comprehensiveNameInput" placeholder="请输入员工姓名" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background: #fff; font-size: 14px; width: 240px; transition: border-color 0.2s;" />
+          <button id="comprehensiveQueryBtn" onclick="handleComprehensiveQuery()" style="padding: 8px 20px; background: #409eff; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background-color 0.2s;">查询综合数据</button>
+        </div>
+        <div class="tooltip">输入员工姓名查询综合数据</div>
+        <!-- 综合查询历史记录 -->
+        <div id="comprehensiveHistoryWrapper" style="margin-top: 10px; display: none;">
+          <div style="font-size: 12px; color: #909399; margin-bottom: 6px;">🕒 查询历史</div>
+          <div class="history-tags" id="comprehensiveHistoryTags"></div>
+        </div>
+      </div>
+
+      <!-- 综合数据列表 -->
+      <div class="analysis-card primary" style="grid-column: 1 / -1;">
+        <h3><i>📋</i> 查询结果列表</h3>
+        <div class="comprehensive-table-wrapper" id="comprehensiveTableWrapper">
+          <table class="comprehensive-table" id="comprehensiveTable">
+            <thead>
+              <tr>
+                <th>员工id</th>
+                <th>姓名</th>
+                <th>在职状态</th>
+                <th>部门名称</th>
+                <th>总年休假</th>
+                <th>可用年休假</th>
+                <th>待结年休假</th>
+                <th>总调休假</th>
+                <th>可用调休假</th>
+                <th>待结调休假</th>
+              </tr>
+            </thead>
+            <tbody id="comprehensiveTableBody">
+              <tr><td colspan="10" class="empty">暂无数据，请输入姓名查询</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 员工信息卡片（选中行后显示详情） -->
+      <div class="analysis-card info">
+        <h3><i>👤</i> 员工姓名</h3>
+        <div class="value" id="employeeName">暂无数据</div>
+        <div class="desc">员工姓名</div>
+      </div>
+      <div class="analysis-card info">
+        <h3><i>🆔</i> 员工ID</h3>
+        <div class="value" id="employeeId">暂无数据</div>
+        <div class="desc">员工编号</div>
+      </div>
+      <div class="analysis-card info">
+        <h3><i>📊</i> 在职状态</h3>
+        <div class="value" id="employeeStatus">暂无数据</div>
+        <div class="desc">当前在职状态</div>
+      </div>
+      <div class="analysis-card info">
+        <h3><i>🏢</i> 部门名称</h3>
+        <div class="value" id="departmentName">暂无数据</div>
+        <div class="desc">所属部门</div>
+      </div>
+
+      <!-- 年休假信息 -->
+      <div class="analysis-card success">
+        <h3><i>📅</i> 当前周期总年休假</h3>
+        <div class="value" id="totalAnnualLeave">暂无数据</div>
+        <div class="desc">年休假总天数</div>
+      </div>
+      <div class="analysis-card success">
+        <h3><i>✅</i> 当前周期可用年休假</h3>
+        <div class="value" id="availableAnnualLeave">暂无数据</div>
+        <div class="desc">可用年休假天数</div>
+      </div>
+      <div class="analysis-card success">
+        <h3><i>⏰</i> 最近待结可用年休假</h3>
+        <div class="value" id="pendingAnnualLeave">暂无数据</div>
+        <div class="desc">待结可用年休假</div>
+      </div>
+
+      <!-- 调休假信息 -->
+      <div class="analysis-card warning">
+        <h3><i>📆</i> 当前周期总调休假</h3>
+        <div class="value" id="totalFlexLeave">暂无数据</div>
+        <div class="desc">调休假总天数</div>
+      </div>
+      <div class="analysis-card warning">
+        <h3><i>✅</i> 当前周期可用调休假</h3>
+        <div class="value" id="availableFlexLeave">暂无数据</div>
+        <div class="desc">可用调休假天数</div>
+      </div>
+      <div class="analysis-card warning">
+        <h3><i>⏰</i> 最近待结可用调休假</h3>
+        <div class="value" id="pendingFlexLeave">暂无数据</div>
+        <div class="desc">待结可用调休假</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 核心数据分析面板 -->
+<div class="collapsible-panel">
+  <div class="panel-header" onclick="togglePanel('analysisPanelBody')">
+    <div class="panel-title"><i>📊</i> 核心价值分析</div>
+    <button class="collapse-btn" id="analysisPanelBtn">−</button>
+  </div>
+  <div class="panel-body" id="analysisPanelBody">
+    <div class="analysis-panel">
+      <!-- 基础信息 -->
+      <div class="analysis-card primary">
+        <h3><i>📅</i> 入贝时间</h3>
+        <div class="value" id="joinDate">暂无数据</div>
+        <div class="desc">首次记录时间</div>
+        <div class="tooltip">入贝时间 = 第一条工资记录的月份</div>
+      </div>
+      <div class="analysis-card success">
+        <h3><i>💰</i> 当前贝壳价值</h3>
+        <div class="value" id="currentSalary">暂无数据</div>
+        <div class="desc">基本工资+绩效+出工补贴</div>
+        <div class="tooltip">当前工资 = 最后一条记录的基本工资+绩效工资+出工补贴</div>
+      </div>
+      <div class="analysis-card primary">
+        <h3><i>📈</i> 累计总贝壳</h3>
+        <div class="value" id="totalIncome">暂无数据</div>
+        <div class="desc">所有月份实发总和</div>
+        <div class="tooltip">累计收入 = 所有月份"本月实发"字段求和</div>
+      </div>
+      
+      <!-- 新增：实际全贝壳总额 -->
+      <div class="analysis-card special-card" onclick="window.currentAnalysisData && renderRealTotalModal(window.currentAnalysisData)" style="cursor: pointer;">
+        <h3><i>💎</i> 实际全贝壳总额</h3>
+        <div class="value" id="realTotalShell">暂无数据</div>
+        <div class="desc">含公积金/社保/补贴等</div>
+        <div class="tooltip">点击查看年度详细账单 (含公司缴纳部分)</div>
+      </div>
+      
+      <!-- 平均指标 -->
+      <div class="analysis-card info">
+        <h3><i>📊</i> 月均贝壳</h3>
+        <div class="value" id="monthAvgIncome">暂无数据</div>
+        <div class="desc">总贝壳 ÷ 总月份数</div>
+        <div class="tooltip">月均收入 = 累计总贝壳 ÷ 记录的月份数量</div>
+      </div>
+      <div class="analysis-card info">
+        <h3><i>📅</i> 年均贝壳</h3>
+        <div class="value" id="yearAvgIncome">暂无数据</div>
+        <div class="desc">总贝壳 ÷ 总年数</div>
+        <div class="tooltip">年均收入 = 累计总贝壳 ÷ (总月份数 ÷ 12)</div>
+      </div>
+      <div class="analysis-card warning">
+        <h3><i>📆</i> 在职月数</h3>
+        <div class="value" id="workMonths">暂无数据</div>
+        <div class="desc">总记录月份数量</div>
+        <div class="tooltip">在职月数 = 结束月份 - 开始月份的月份差</div>
+      </div>
+      
+      <!-- 加班/请假指标 -->
+      <div class="analysis-card danger">
+        <h3><i>⏰</i> 累计加班天数</h3>
+        <div class="value" id="totalOvertimeDays">暂无数据</div>
+        <div class="desc">加班补贴 ÷ 50元/天</div>
+        <div class="tooltip">加班天数 = 加班补贴 ÷ 50（按50元/天标准换算）</div>
+      </div>
+      <div class="analysis-card warning">
+        <h3><i>🛌</i> 累计请假天数</h3>
+        <div class="value" id="totalLeaveDays">暂无数据</div>
+        <div class="desc">请假+不出工天数总和</div>
+        <div class="tooltip">请假天数 = 请假天数 + 不出工天数</div>
+      </div>
+      <div class="analysis-card info">
+        <h3><i>⚖️</i> 月均加班天数</h3>
+        <div class="value" id="monthAvgOvertime">暂无数据</div>
+        <div class="desc">总加班 ÷ 总月份数</div>
+        <div class="tooltip">月均加班 = 累计加班天数 ÷ 在职月数</div>
+      </div>
+      
+      <!-- 奖金指标 -->
+      <div class="analysis-card success">
+        <h3><i>🎁</i> 累计专项奖金</h3>
+        <div class="value" id="totalSpecialBonus">暂无数据</div>
+        <div class="desc">所有月份奖金总和</div>
+        <div class="tooltip">专项奖金 = 所有月份"专项奖金"字段求和</div>
+      </div>
+      <div class="analysis-card success">
+        <h3><i>🎯</i> 月均专项奖金</h3>
+        <div class="value" id="monthAvgBonus">暂无数据</div>
+        <div class="desc">总奖金 ÷ 总月份数</div>
+        <div class="tooltip">月均奖金 = 累计专项奖金 ÷ 在职月数</div>
+      </div>
+      
+      <!-- 涨薪指标 -->
+      <div class="analysis-card primary">
+        <h3><i>🚀</i> 涨贝壳总次数</h3>
+        <div class="value" id="totalRaiseTimes">暂无数据</div>
+        <div class="desc">仅统计整数涨幅</div>
+        <div class="tooltip">涨薪次数 = 识别到的整数涨幅（300/500/1000等）次数</div>
+      </div>
+      <div class="analysis-card primary">
+        <h3><i>📈</i> 累计涨幅金额</h3>
+        <div class="value" id="totalRaiseAmount">暂无数据</div>
+        <div class="desc">所有涨薪金额总和</div>
+        <div class="tooltip">累计涨幅 = 每次涨薪金额相加</div>
+      </div>
+      <div class="analysis-card warning">
+        <h3><i>📊</i> 平均涨薪幅度</h3>
+        <div class="value" id="avgRaiseRate">暂无数据</div>
+        <div class="desc">总涨幅 ÷ 涨薪次数</div>
+        <div class="tooltip">平均涨薪幅度 = 累计涨幅金额 ÷ 涨薪次数</div>
+      </div>
+      <div class="analysis-card danger">
+        <h3><i>📅</i> 平均涨薪周期</h3>
+        <div class="value" id="avgRaiseCycle">暂无数据</div>
+        <div class="desc">在职月数 ÷ 涨薪次数</div>
+        <div class="tooltip">平均涨薪周期 = 在职月数 ÷ 涨薪次数（月/次）</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 涨贝壳记录面板 -->
+<div class="collapsible-panel">
+  <div class="panel-header" onclick="togglePanel('raiseRecordPanelBody')">
+    <div class="panel-title"><i>📈</i> 涨贝壳记录（智能识别）</div>
+    <button class="collapse-btn" id="raiseRecordPanelBtn">−</button>
+  </div>
+  <div class="panel-body" id="raiseRecordPanelBody">
+    <div class="raise-record-table-wrap">
+      <table class="raise-record-table" id="raiseRecordTable">
+        <thead>
+          <tr>
+            <th>涨贝壳时间</th>
+            <th>涨前贝壳</th>
+            <th>涨后贝壳</th>
+            <th>涨贝壳金额</th>
+            <th>贝壳涨幅(%)</th>
+            <th>涨贝壳年份</th>
+            <th>涨薪类型</th>
+          </tr>
+        </thead>
+        <tbody id="raiseRecordBody">
+          <tr><td colspan="7" class="empty">暂无涨贝壳记录（仅显示整数涨幅）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 员工基础信息 -->
+<div class="collapsible-panel">
+  <div class="panel-header" onclick="togglePanel('infoCardsPanelBody')">
+    <div class="panel-title"><i>👤</i> 员工基础信息</div>
+    <button class="collapse-btn" id="infoCardsPanelBtn">−</button>
+  </div>
+  <div class="panel-body" id="infoCardsPanelBody">
+    <div class="info-cards-grid" id="infoCardsGrid">
+      <div class="empty">暂无员工基础信息</div>
+    </div>
+  </div>
+</div>
+
+<!-- 月度贝壳明细 -->
+<div class="collapsible-panel">
+  <div class="panel-header" onclick="togglePanel('table2PanelBody')">
+    <div class="panel-title"><i>📋</i> 月度贝壳明细</div>
+    <button class="collapse-btn" id="table2PanelBtn">−</button>
+  </div>
+  <div class="panel-body table-box-2" id="table2PanelBody">
+    <table id="table2">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 数据可视化分析 -->
+<div class="collapsible-panel">
+  <div class="panel-header" onclick="togglePanel('chartsPanelBody')">
+    <div class="panel-title"><i>📉</i> 数据可视化分析</div>
+    <button class="collapse-btn" id="chartsPanelBtn">−</button>
+  </div>
+  <div class="panel-body" id="chartsPanelBody">
+    <div class="charts-container">
+      <div class="chart-box" id="salaryTrendChart"></div>
+      <div class="chart-box" id="overtimeTrendChart"></div>
+      <div class="chart-box" id="bonusTrendChart"></div>
+      <div class="chart-box" id="raiseCompareChart"></div>
+      <div class="chart-box" id="incomeCompositionChart"></div>
+      <div class="chart-box" id="salaryRatioChart"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 实际全贝壳详情模态框 -->
+<div id="realTotalModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title">💎 实际全贝壳价值年度账单</div>
+      <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="config-panel">
+        <label><input type="checkbox" class="modal-checkbox" id="checkNet" data-key="net" checked disabled> 实发工资</label>
+        <label><input type="checkbox" class="modal-checkbox" id="checkPPF" data-key="personalPF"> 个人公积金</label>
+        <label><input type="checkbox" class="modal-checkbox" id="checkCPF" data-key="companyPF"> 公司公积金</label>
+        <label><input type="checkbox" class="modal-checkbox" id="checkPSS" data-key="personalSS"> 个人社保</label>
+        <label><input type="checkbox" class="modal-checkbox" id="checkCSS" data-key="companySS"> 公司社保</label>
+        <label><input type="checkbox" class="modal-checkbox" id="checkLeave" data-key="leaveCash"> 假期折算</label>
+        <label><input type="checkbox" class="modal-checkbox" id="checkComp" data-key="computerSubsidy"> 电脑补贴</label>
+        <label><input type="checkbox" class="modal-checkbox" id="checkOther" data-key="otherBenefits"> 其他福利</label>
+      </div>
+      <div class="total-display" id="modalTotalDisplay">🐚0.00</div>
+      <div class="table-wrapper">
+        <table class="detail-table">
+          <thead>
+            <tr>
+              <th>年份</th>
+              <th>在职月数</th>
+              <th>实发工资</th>
+              <th>公积金总额</th>
+              <th>社保总额</th>
+              <th>假期折算</th>
+              <th>电脑补贴</th>
+              <th>其他福利</th>
+              <th>年度总价值</th>
+            </tr>
+          </thead>
+          <tbody id="realTotalBody">
+            <!-- 动态生成 -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/calc_total.js?v=7"></script>
+<script src="js/main.js?v=7"></script>
+</body>
+</html>
+ <!-- python -m http.server 8080 -->
+  <!-- http://localhost:9123/%E7%A5%9E%E7%BA%A7%E7%B3%BB%E7%BB%9F.html -->

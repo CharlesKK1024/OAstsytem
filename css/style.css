@@ -1,0 +1,1288 @@
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+
+    body {
+      padding: 20px;
+      background: #f5f7fa;
+    }
+
+    .toolbar {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 16px;
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    #nameInput {
+      padding: 8px 12px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      background: #fff;
+      font-size: 14px;
+      width: 240px;
+      transition: border-color 0.2s;
+    }
+
+    #nameInput:focus {
+      border-color: #409eff;
+      outline: none;
+    }
+
+    .date-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .date-item label {
+      font-size: 14px;
+      color: #333;
+    }
+
+    .date-item input {
+      padding: 8px 8px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .date-item input:focus {
+      border-color: #409eff;
+      outline: none;
+    }
+
+    #queryBtn {
+      padding: 8px 20px;
+      background: #409eff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+
+    #queryBtn:disabled {
+      background: #c0c4cc;
+      cursor: not-allowed;
+    }
+
+    #queryBtn:hover:not(:disabled) {
+      background: #66b1ff;
+    }
+
+    /* 折叠面板 - 优化动画+样式 */
+    .collapsible-panel {
+      margin-bottom: 16px;
+      border: 1px solid #e4e7ed;
+      border-radius: 6px;
+      background: #fff;
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e4e7ed;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s;
+    }
+
+    .panel-header:hover {
+      background: #f2f3f5;
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-title i {
+      color: #409eff;
+      font-style: normal;
+    }
+
+    .collapse-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      color: #666;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .collapse-btn:hover {
+      background: #e4e7ed;
+      color: #409eff;
+    }
+
+    .panel-body {
+      max-height: 2000px;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0),
+        padding 0.4s ease,
+        opacity 0.35s ease;
+      opacity: 1;
+    }
+
+    .panel-body.collapsed {
+      max-height: 0;
+      padding: 0 20px;
+      opacity: 0;
+    }
+
+    /* 核心分析面板 - 新增更多指标 */
+    .analysis-panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .analysis-card {
+      padding: 16px;
+      border-radius: 6px;
+      background: #f8f9fa;
+      border: 1px solid #e4e7ed;
+      border-left: 4px solid #409eff;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .analysis-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(45deg, rgba(64, 158, 255, 0.05), transparent);
+      border-radius: 0 0 0 60px;
+    }
+
+    .analysis-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-color: #409eff;
+    }
+
+    .analysis-card.primary {
+      border-left-color: #409eff;
+    }
+
+    .analysis-card.success {
+      border-left-color: #67c23a;
+    }
+
+    .analysis-card.warning {
+      border-left-color: #e6a23c;
+    }
+
+    .analysis-card.danger {
+      border-left-color: #f56c6c;
+    }
+
+    .analysis-card.info {
+      border-left-color: #909399;
+    }
+
+    .analysis-card h3 {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .analysis-card h3 i {
+      font-style: normal;
+      color: #999;
+    }
+
+    .analysis-card .value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .analysis-card .desc {
+      font-size: 12px;
+      color: #999;
+      line-height: 1.4;
+    }
+
+    /* Hover提示 */
+    .analysis-card .tooltip {
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(50, 50, 50, 0.9);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .analysis-card:hover .tooltip {
+      top: -50px;
+      opacity: 1;
+    }
+
+    /* 涨贝壳记录面板 */
+    .raise-record-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      max-height: 400px;
+      overflow-y: auto;
+      border-radius: 4px;
+      border: 1px solid #e4e7ed;
+    }
+
+    .raise-record-table {
+      width: 100%;
+      min-width: 700px;
+      border-collapse: collapse;
+    }
+
+    .raise-record-table th {
+      padding: 12px 10px;
+      text-align: center;
+      border-bottom: 2px solid #e4e7ed;
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
+      background: #f8f9fa;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      white-space: nowrap;
+      /* 表头不换行 */
+    }
+
+    .raise-record-table td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid #e4e7ed;
+      font-size: 16px;
+      color: #666;
+      transition: background-color 0.2s;
+    }
+
+    .raise-record-table tr:hover td {
+      background-color: #f8f9fa;
+    }
+
+    .raise-record-table .highlight {
+      color: #409eff;
+      font-weight: bold;
+    }
+
+    /* 员工基础信息 - 限制高度 */
+    .info-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      max-height: 300px;
+      /* 限制最大高度 */
+      overflow-y: auto;
+      /* 超出滚动 */
+    }
+
+    .info-card {
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      border: 1px solid #e4e7ed;
+      border-left: 4px solid #67c23a;
+      transition: all 0.3s ease;
+      word-wrap: break-word;
+    }
+
+    .info-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .info-card .label {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+
+    .info-card .value {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    /* 明细表格 - 表头不换行，去掉🐚 */
+    .table-box-2 {
+      width: 100%;
+      overflow: auto;
+      max-height: 450px;
+      border-radius: 4px;
+      border: 1px solid #e4e7ed;
+    }
+
+    #table2 {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 2500px;
+    }
+
+    #table2 th {
+      padding: 12px 10px;
+      text-align: center;
+      border-bottom: 2px solid #e4e7ed;
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
+      background: #f8f9fa;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      white-space: nowrap;
+      /* 强制表头不换行 */
+    }
+
+    #table2 td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid #e4e7ed;
+      font-size: 12px;
+      color: #666;
+      transition: background-color 0.2s;
+    }
+
+    #table2 tr:hover td {
+      background-color: #f8f9fa;
+    }
+
+    /* 图表容器 */
+    .charts-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 20px;
+    }
+
+    .chart-box {
+      height: 400px;
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      border: 1px solid #e4e7ed;
+      transition: all 0.3s ease;
+    }
+
+    .chart-box:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .empty {
+      padding: 40px;
+      text-align: center;
+      color: #909393;
+      font-size: 14px;
+    }
+
+    .tip {
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 14px;
+      background: #fff;
+      border: 1px solid #e4e7ed;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .tip-success {
+      background: #f0f9eb;
+      color: #67c23a;
+      border-color: #e1f3d8;
+    }
+
+    .tip-error {
+      background: #fef0f0;
+      color: #f56c6c;
+      border-color: #fbc4c4;
+    }
+
+    .tip-normal {
+      background: #fdf6ec;
+      color: #e6a23c;
+      border-color: #faecd8;
+    }
+
+    /* 响应式调整：小屏幕下优化 */
+    @media (max-width: 768px) {
+      .charts-container {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-box {
+        height: 300px;
+      }
+
+      .analysis-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      #nameInput {
+        width: 100%;
+      }
+
+      .date-item {
+        width: 100%;
+      }
+    }
+
+    /* ================= 深色主题 (Dark Mode) ================= */
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    /* 输入框强制深色 (提高优先级) */
+    body.dark-mode #nameInput,
+    body.dark-mode .date-item input {
+      background-color: #2c2c2c;
+      border: 1px solid #00f3ff;
+      color: #00f3ff;
+      box-shadow: 0 0 5px rgba(0, 243, 255, 0.2);
+    }
+
+    body.dark-mode .toolbar {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+    }
+
+    body.dark-mode .toolbar label {
+      color: #00f3ff;
+    }
+
+    body.dark-mode #queryBtn {
+      background: linear-gradient(90deg, #00f3ff, #0066ff);
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+      color: #000;
+      font-weight: bold;
+    }
+
+    body.dark-mode #themeBtn {
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
+    }
+
+    /* 折叠面板深色适配 */
+    body.dark-mode .collapsible-panel {
+      background-color: #1e1e1e;
+      border-color: #333;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    body.dark-mode .panel-header {
+      background-color: #252525;
+      border-bottom-color: #333;
+      font-size: 16px;
+    }
+
+    body.dark-mode .panel-header:hover {
+      background-color: #333;
+    }
+
+    body.dark-mode .panel-title {
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .collapse-btn {
+      color: #aaa;
+    }
+
+    body.dark-mode .collapse-btn:hover {
+      background-color: #333;
+      color: #00f3ff;
+    }
+
+    /* 分析卡片深色 */
+    body.dark-mode .analysis-card,
+    body.dark-mode .chart-box,
+    body.dark-mode .info-card {
+      background-color: #252525;
+      border: 1px solid #333;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-mode .analysis-card {
+      border-left: 4px solid #00f3ff;
+      /* 荧光蓝 */
+      box-shadow: 0 0 8px rgba(0, 243, 255, 0.1);
+    }
+
+    body.dark-mode .analysis-card h3 {
+      color: #aaa;
+    }
+
+    body.dark-mode .analysis-card p,
+    body.dark-mode .analysis-card .value {
+      color: #00ff9d;
+      /* 荧光绿 */
+      text-shadow: 0 0 8px rgba(0, 255, 157, 0.4);
+    }
+
+    body.dark-mode .analysis-card .desc {
+      color: #888;
+    }
+
+    /* 警告和错误卡片调整 */
+    body.dark-mode .analysis-card.warning {
+      border-left-color: #ffcc00;
+    }
+
+    body.dark-mode .analysis-card.danger {
+      border-left-color: #ff0055;
+    }
+
+    /* 基础信息卡片 */
+    body.dark-mode .info-card .label {
+      color: #aaa;
+    }
+
+    body.dark-mode .info-card .value {
+      color: #e0e0e0;
+    }
+
+    /* 表格深色 */
+    body.dark-mode .raise-record-table th,
+    body.dark-mode #table2 th {
+      background-color: #2a2a2a;
+      color: #00f3ff;
+      border-bottom-color: #333;
+    }
+
+    body.dark-mode .raise-record-table td,
+    body.dark-mode #table2 td {
+      border-bottom-color: #333;
+      color: #ccc;
+    }
+
+    body.dark-mode .raise-record-table tr:hover td,
+    body.dark-mode #table2 tr:hover td {
+      background-color: #333;
+    }
+
+    body.dark-mode .empty {
+      color: #666;
+    }
+
+    /* 提示框 */
+    body.dark-mode .tip {
+      background-color: #252525;
+      border-color: #444;
+      color: #ccc;
+    }
+
+    body.dark-mode .tip-success {
+      background-color: rgba(0, 255, 157, 0.1);
+      border-color: #00ff9d;
+      color: #00ff9d;
+    }
+
+    body.dark-mode .tip-error {
+      background-color: rgba(255, 0, 85, 0.1);
+      border-color: #ff0055;
+      color: #ff0055;
+    }
+
+    body.dark-mode .tip-normal {
+      background-color: rgba(230, 162, 60, 0.1);
+      border-color: #e6a23c;
+      color: #e6a23c;
+    }
+
+    /* ================= 滚动条美化 ================= */
+    /* 整体滚动条 */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    /* 滚动条轨道 */
+    ::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 5px;
+    }
+
+    /* 滚动条滑块 - 默认浅色 */
+    ::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 5px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #aaa;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+
+    /* 深色模式下的滚动条 */
+    body.dark-mode ::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 243, 255, 0.2);
+      /* 透明蓝色 */
+      border-radius: 5px;
+      box-shadow: inset 0 0 6px rgba(0, 243, 255, 0.4);
+      /* 微光 */
+      border: 1px solid rgba(0, 243, 255, 0.1);
+    }
+
+    body.dark-mode ::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(0, 243, 255, 0.5);
+      box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.8), 0 0 5px rgba(0, 243, 255, 0.5);
+    }
+
+    /* 适配 Firefox */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #ccc transparent;
+    }
+
+    body.dark-mode * {
+      scrollbar-color: rgba(0, 243, 255, 0.4) transparent;
+    }
+
+    /* ================= 重点卡片高亮样式 ================= */
+    .info-card.highlight-card {
+      background-color: #f0f9eb;
+      border: 1px solid #e1f3d8;
+    }
+    
+    .info-card.highlight-card .label {
+      color: #67c23a;
+      font-weight: bold;
+    }
+    
+    .info-card.highlight-card .value {
+      color: #333;
+      font-weight: bold;
+    }
+
+    /* 蓝色高亮 (出生日期等) */
+    .info-card.highlight-card-blue {
+      background-color: #ecf5ff;
+      border: 1px solid #d9ecff;
+    }
+
+    .info-card.highlight-card-blue .label {
+      color: #409eff;
+      font-weight: bold;
+    }
+    
+    .info-card.highlight-card-blue .value {
+      font-weight: bold;
+    }
+
+    /* 深色模式适配 */
+    body.dark-mode .info-card.highlight-card {
+      background-color: rgba(103, 194, 58, 0.1);
+      border-color: rgba(103, 194, 58, 0.3);
+    }
+    
+    body.dark-mode .info-card.highlight-card .label {
+      color: #67c23a;
+    }
+    
+    body.dark-mode .info-card.highlight-card .value {
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .info-card.highlight-card-blue {
+      background-color: rgba(64, 158, 255, 0.1);
+      border-color: rgba(64, 158, 255, 0.3);
+    }
+
+    body.dark-mode .info-card.highlight-card-blue .label {
+      color: #409eff;
+    }
+
+    body.dark-mode .info-card.highlight-card-blue .value {
+      color: #e0e0e0;
+    }
+
+    /* ================= 历史记录面板 (折叠样式适配) ================= */
+    .history-panel-wrapper .history-tags {
+      padding: 12px 12px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .history-tag {
+      padding: 8px 12px;
+      background: #f0f2f5;
+      border: 1px solid #dcdfe6;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #606266;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column; /* 垂直排列 */
+      align-items: center; /* 居中对齐 */
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%; /* 占满网格 */
+      height: 100%; /* 确保高度一致 */
+    }
+
+    .history-tag:hover {
+      color: #409eff;
+      border-color: #c6e2ff;
+      background-color: #ecf5ff;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .history-tag.active {
+      background-color: #409eff;
+      color: #fff;
+      border-color: #409eff;
+    }
+    
+    .history-tag .name-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      align-items: center;
+      font-weight: bold;
+    }
+
+    .history-tag .close {
+      font-size: 16px;
+      margin-left: 8px;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    
+    .history-tag .close:hover {
+      opacity: 1;
+      color: #f56c6c;
+    }
+    
+    /* 工资Tag样式 */
+    .salary-tag {
+      font-size: 12px;
+      color: #ff6600; /* 荧光橙 */
+      background: rgba(255, 102, 0, 0.1); /* 透明体 */
+      border: 1px solid rgba(255, 102, 0, 0.3);
+      border-radius: 4px;
+      padding: 2px 6px;
+      width: 100%;
+      text-align: center;
+      margin-top: 4px;
+      animation: pulse 2s infinite; /* 动效 */
+      font-weight: bold;
+    }
+    
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(255, 102, 0, 0.4);
+      }
+      70% {
+        box-shadow: 0 0 0 6px rgba(255, 102, 0, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 102, 0, 0);
+      }
+    }
+
+    /* 深色模式适配 */
+    body.dark-mode .history-tag {
+      background-color: #2c2c2c;
+      border-color: #444;
+      color: #ccc;
+    }
+
+    body.dark-mode .history-tag:hover {
+      color: #00f3ff;
+      border-color: #00f3ff;
+      background-color: rgba(0, 243, 255, 0.1);
+    }
+
+    body.dark-mode .history-tag.active {
+      background-color: rgba(0, 243, 255, 0.2);
+      color: #00f3ff;
+      border-color: #00f3ff;
+      box-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
+    }
+    
+    body.dark-mode .salary-tag {
+       color: #ff9900; /* 深色模式下更亮一点的橙色 */
+       background: rgba(255, 153, 0, 0.15);
+       border-color: rgba(255, 153, 0, 0.4);
+    }
+
+    /* ================= 新增功能样式 ================= */
+
+    /* 历史记录隐藏按钮 (Header版) */
+    .history-hide-btn-header {
+      width: 24px;
+      height: 24px;
+      line-height: 22px;
+      text-align: center;
+      background: transparent;
+      color: #999;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 18px;
+      border: 1px solid transparent;
+      margin-left: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    
+    .history-hide-btn-header:hover {
+      background-color: #fef0f0;
+      color: #f56c6c;
+    }
+    
+    body.dark-mode .history-hide-btn-header:hover {
+      background-color: rgba(245, 108, 108, 0.2);
+      color: #f56c6c;
+    }
+
+    /* 手电筒效果遮罩 - 强制隐藏 */
+    #flashlight-overlay {
+      display: none !important;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none; /* 让点击穿透 */
+      z-index: 9999;
+      
+      /* 整体背景变暗 */
+      background: rgba(0, 0, 0, 0.92);
+      
+      /* 整体模糊 */
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      
+      /* 使用遮罩挖孔：中心透明（看不见遮罩），周围黑色（看见遮罩） */
+      /* 径向渐变：中心透明 -> 边缘黑色 */
+      -webkit-mask-image: radial-gradient(circle 180px at var(--x, 50%) var(--y, 50%), transparent 0%, black 15%);
+      mask-image: radial-gradient(circle 180px at var(--x, 50%) var(--y, 50%), transparent 0%, black 15%);
+      
+      transition: background 0.3s;
+    }
+
+    /* ================= 实际全贝壳总额卡片样式 ================= */
+    .analysis-card.special-card {
+      border-left-color: #8e44ad;
+      background: linear-gradient(135deg, #f8f9fa 0%, #f3e5f5 100%);
+      cursor: pointer;
+    }
+    
+    .analysis-card.special-card:hover {
+      box-shadow: 0 4px 15px rgba(142, 68, 173, 0.2);
+      transform: translateY(-3px);
+    }
+    
+    .analysis-card.special-card h3 i {
+      color: #9b59b6;
+    }
+    
+    .analysis-card.special-card .value {
+      color: #8e44ad;
+    }
+    
+    /* 深色模式适配 */
+    body.dark-mode .analysis-card.special-card {
+      background: linear-gradient(135deg, #252525 0%, #2c2030 100%);
+      border-left-color: #d05ce3;
+      box-shadow: 0 0 10px rgba(208, 92, 227, 0.15);
+    }
+    
+    body.dark-mode .analysis-card.special-card h3 i {
+      color: #e056fd;
+    }
+    
+    body.dark-mode .analysis-card.special-card .value {
+      color: #e056fd;
+      text-shadow: 0 0 8px rgba(224, 86, 253, 0.4);
+    }
+
+    /* ================= 模态框样式 ================= */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal-content {
+      width: 90%;
+      max-width: 900px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      flex-direction: column;
+      max-height: 85vh;
+    }
+    
+    .modal-overlay.show .modal-content {
+      transform: scale(1);
+    }
+    
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 28px;
+      color: #999;
+      cursor: pointer;
+      line-height: 1;
+    }
+    
+    .close-btn:hover {
+      color: #f56c6c;
+    }
+    
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    
+    /* 配置面板 */
+    .config-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #e4e7ed;
+    }
+    
+    .config-panel label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #606266;
+      user-select: none;
+    }
+    
+    .config-panel input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #8e44ad;
+    }
+    
+    /* 总额显示 */
+    .total-display {
+      text-align: center;
+      font-size: 48px;
+      font-weight: bold;
+      color: #8e44ad;
+      margin: 20px 0;
+      text-shadow: 0 2px 10px rgba(142, 68, 173, 0.2);
+    }
+    
+    /* 表格 */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid #eee;
+    }
+    
+    .detail-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+    
+    .detail-table th {
+      background: #f3e5f5;
+      color: #8e44ad;
+      padding: 12px;
+      font-weight: bold;
+      text-align: center;
+    }
+    
+    .detail-table td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+      color: #666;
+    }
+    
+    .detail-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .detail-table .highlight-total {
+      color: #8e44ad;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    /* 深色模式适配 */
+    body.dark-mode .modal-content {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    body.dark-mode .modal-header {
+      border-bottom-color: #333;
+    }
+    
+    body.dark-mode .modal-title {
+      color: #e0e0e0;
+    }
+    
+    body.dark-mode .config-panel {
+      background: #252525;
+      border-color: #333;
+    }
+    
+    body.dark-mode .config-panel label {
+      color: #ccc;
+    }
+    
+    body.dark-mode .config-panel input[type="checkbox"] {
+      accent-color: #d05ce3;
+    }
+    
+    body.dark-mode .total-display {
+      color: #e056fd;
+      text-shadow: 0 0 15px rgba(224, 86, 253, 0.5);
+    }
+    
+    body.dark-mode .table-wrapper {
+      border-color: #333;
+    }
+    
+    body.dark-mode .detail-table th {
+      background: #2c2030;
+      color: #e056fd;
+    }
+    
+    body.dark-mode .detail-table td {
+      border-bottom-color: #333;
+      color: #aaa;
+    }
+    
+    body.dark-mode .detail-table .highlight-total {
+      color: #e056fd;
+    }
+    
+    body.dark-mode .close-btn:hover {
+      color: #ff0055;
+    }
+
+    /* ================= 综合数据查询表格样式 ================= */
+    .comprehensive-table-wrapper {
+      margin-top: 12px;
+      overflow-x: auto;
+      border-radius: 6px;
+      border: 1px solid #e4e7ed;
+    }
+
+    .comprehensive-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: #fff;
+    }
+
+    .comprehensive-table th {
+      background: #f5f7fa;
+      color: #606266;
+      font-weight: 600;
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 2px solid #e4e7ed;
+      white-space: nowrap;
+    }
+
+    .comprehensive-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #ebeef5;
+      color: #333;
+      transition: background-color 0.2s;
+    }
+
+    .comprehensive-table tr:hover td {
+      background-color: #ecf5ff;
+    }
+
+    .comprehensive-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .comprehensive-table .empty {
+      text-align: center;
+      color: #909399;
+      padding: 30px !important;
+      font-size: 14px;
+    }
+
+    /* 状态徽章样式 */
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-badge.status-正常 {
+      background-color: #f0f9eb;
+      color: #67c23a;
+      border: 1px solid #e1f3d8;
+    }
+
+    .status-badge.status-试用中 {
+      background-color: #fdf6ec;
+      color: #e6a23c;
+      border: 1px solid #faecd8;
+    }
+
+    .status-badge.status-离职 {
+      background-color: #fef0f0;
+      color: #f56c6c;
+      border: 1px solid #fde2e2;
+    }
+
+    .status-badge.status-unknown {
+      background-color: #f4f4f5;
+      color: #909399;
+      border: 1px solid #e9e9eb;
+    }
+
+    /* 深色模式适配 - 综合数据表格 */
+    body.dark-mode .comprehensive-table-wrapper {
+      border-color: #444;
+    }
+
+    body.dark-mode .comprehensive-table {
+      background: #1e1e1e;
+    }
+
+    body.dark-mode .comprehensive-table th {
+      background: #2c2c2c;
+      color: #00f3ff;
+      border-bottom-color: #444;
+    }
+
+    body.dark-mode .comprehensive-table td {
+      border-bottom-color: #333;
+      color: #ccc;
+    }
+
+    body.dark-mode .comprehensive-table tr:hover td {
+      background-color: rgba(0, 243, 255, 0.08);
+    }
+
+    body.dark-mode .comprehensive-table .empty {
+      color: #666;
+    }
+
+    body.dark-mode .status-badge.status-正常 {
+      background-color: rgba(103, 194, 58, 0.15);
+      color: #67c23a;
+      border-color: rgba(103, 194, 58, 0.3);
+    }
+
+    body.dark-mode .status-badge.status-试用中 {
+      background-color: rgba(230, 162, 60, 0.15);
+      color: #e6a23c;
+      border-color: rgba(230, 162, 60, 0.3);
+    }
+
+    body.dark-mode .status-badge.status-离职 {
+      background-color: rgba(245, 108, 108, 0.15);
+      color: #f56c6c;
+      border-color: rgba(245, 108, 108, 0.3);
+    }
+
